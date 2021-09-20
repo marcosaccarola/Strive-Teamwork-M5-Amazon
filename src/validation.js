@@ -7,6 +7,6 @@ export const postValidationMiddleware = [
     body("price").exists().withMessage("price  is a mandatory field!"),
     body("category").exists().withMessage("category  is a mandatory field!"),
     body("comment").exists().withMessage("comment  is a mandatory field!"),
-    body("rate").exists().withMessage("rate is a mandatory field!"),
+    body("rate").exists().isNumeric().withMessage("rate is a mandatory field!"),
     body("productId").exists().withMessage("productId  is a mandatory field!")
 ]

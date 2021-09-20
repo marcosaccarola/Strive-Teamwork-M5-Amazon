@@ -3,12 +3,15 @@ import {fileURLToPath} from 'url'
 import path,{dirname} from 'path'
 import fs from 'fs'
 import uniqid from 'uniqid'
-//import { send } from 'process'
+import {checkReviewSchema,checkValidationResult} from './validation.js'
+import createHttpError from "http-errors"
+import { validationResult } from "express-validator"
+
 
 const _FILENAME=fileURLToPath(import.meta.url)
 const _DIRNAME=dirname(_FILENAME)
 const reviewsJSONFILEPath=path.join(_DIRNAME,'reviews.json')
-//const productsJSONFILEPath=path.join(_DIRNAME,'../products/products.json')
+const productsJSONFILEPath=path.join(_DIRNAME,'../products/products.json')
 
 
 
@@ -26,21 +29,32 @@ router.get('/',async(req,res,next)=>{
     }
 })
 // POST A REVIEW by product ID
-router.post('/:id',async(req,res,next)=>{
+router.post('/:id',
+//validationResult,
+checkReviewSchema,checkValidationResult,
+async(req,res,next)=>{
     try {        
         const buffer=fs.readFileSync(reviewsJSONFILEPath)
         const string=buffer.toString()
         const array=JSON.parse(string)
-        const{comment,rate}=req.body
+        const bufferProduct=fs.readFileSync(productsJSONFILEPath)
+        const stringProduct=bufferProduct.toString()
+        const arrayProduct=JSON.parse(stringProduct)
+        //const{comment,rate}=req.body BECAUSE I'M USING VALIDATION SCHEMA
         const review={
             _id:uniqid(),
-            comment,rate,
+            //comment,rate, BECAUSE I'M USING VALIDATION SCHEMA
+            ...req.body,
             productId:req.params.id,
             createdAt:new Date()
         }
-        array.push(review)
-        fs.writeFileSync(reviewsJSONFILEPath,JSON.stringify(array))
-        res.send(review)
+        const reqProduct=arrayProduct.find(p=>p._id===req.params.id)
+        if(!reqProduct){res.status(404).send({message:`PRODUCT WITH ${req.params.id} NOT FOUND`})}
+        else{
+            array.push(review)
+            fs.writeFileSync(reviewsJSONFILEPath,JSON.stringify(array))
+            res.send(review)
+        }
     } catch (error) {
         res.status(500).send({message:error.message})
     }   
