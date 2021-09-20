@@ -3,7 +3,9 @@ import { fileURLToPath } from "url";
 import path, { dirname, join } from "path";
 import fs from "fs-extra";
 import uniqid from "uniqid";
-//import router from "../reviews";
+import multer from "multer"
+import { writeFileToPublicDirectory } from "../../utils/utils.js";
+
 
 const productsJSONPath = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -18,7 +20,26 @@ const writeproducts = (content) =>
   fs.writeFileSync(productsJSONPath, JSON.stringify(content));
 
 const productsRouter = express.Router();
+////////// Image upload ////////////////////////////
+productsRouter.post("/:id/upload", multer().single('image'), async(req, res, next) => {
+    try {
+        console.log(req.params)
+        const {url, id} = await writeFileToPublicDirectory(req.file)
+        //res.send({url, id})
+       //const updateimage = { "imageUrl" : `${url}` }
+        const products = await getproducts()
+        const TobeEditedproductIndex = products.findIndex(product => product._id === req.params.id)
+        products[TobeEditedproductIndex] = {...products[TobeEditedproductIndex], ...updateimage}
+        await writeproducts(products)
+        res.send({url, id, message:"done succeded!!"})
+        // const products = getproducts()
+        // const finding = products.filter(product => product._id === )
 
+    } catch (error) {
+        next(error)
+    }
+})
+//////////////////////////////////////////////////////////////
 productsRouter.post("/", async(req, res, next) => {
   try {
     
