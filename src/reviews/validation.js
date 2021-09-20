@@ -7,7 +7,7 @@ const reviewSchema={
         }
     },
     rate:{
-        isNumber:{
+        isNumeric:{
             errorMessage:'RATE IS REQUIRED FOR REVIEWS'
         }
     }

@@ -3,8 +3,13 @@ import { fileURLToPath } from "url";
 import path, { dirname, join } from "path";
 import fs from "fs-extra";
 import uniqid from "uniqid";
+//import router from "../reviews";
 
 const productsJSONPath = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "products.json"
+);
+const productsJSONPath2 = path.join(
   dirname(fileURLToPath(import.meta.url)),
   "products.json"
 );
@@ -34,7 +39,7 @@ productsRouter.post("/", async(req, res, next) => {
     next(error);
   }
 });
-
+/*
 productsRouter.get("/", async (req, res, next) => {
   try {
     const products = await getproducts();
@@ -43,7 +48,7 @@ productsRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-
+*/
 productsRouter.get("/:id", async (req, res, next) => {
   try {
     const products = await getproducts();
@@ -89,5 +94,24 @@ productsRouter.delete("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+// GET BY CATEGORY
+productsRouter.get('/',async(req,res,next)=>{
+  try {
+    
+    const buffer=fs.readFileSync(productsJSONPath2)
+    const string=buffer.toString()
+    const array=JSON.parse(string)
+    if(req.query.category){
+      const productsByCategory=array.filter(p=>p.category===req.query.category)
+      console.log('CATEGORY',req.query.category)
+      res.send(productsByCategory)
+    }else{
+      res.send(array)
+    }
+  } catch (error) {
+    res.status(500).send({message:error.message})
+  }
+})
 
 export default productsRouter;
