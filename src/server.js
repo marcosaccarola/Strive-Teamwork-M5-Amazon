@@ -26,6 +26,7 @@ server.use('/products/:id/reviews',reviewsRouter)
 
 server.use("/products", productsRouter)
 
+
 console.table(listEndpoints(server))
 
 
