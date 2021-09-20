@@ -8,6 +8,9 @@ import uniqid from 'uniqid'
 const _FILENAME=fileURLToPath(import.meta.url)
 const _DIRNAME=dirname(_FILENAME)
 const reviewsJSONFILEPath=path.join(_DIRNAME,'reviews.json')
+const productsJSONFILEPath=path.join(_DIRNAME,'../products/products.json')
+
+
 
 const router=express.Router()
 
@@ -83,6 +86,14 @@ router.get('/:id',async(req,res,next)=>{
         const reqReview=array.find(r=>r._id===req.params.id)
         if(!reqReview){message:`A REVIEW WITH ID ${req.params.id} DOES NOT EXIST`}
         res.send(reqReview)
+    } catch (error) {
+        res.status(500).send({message:error.message})
+    }
+})
+// EXTRA METHOD TO GET ALL REVIEWS OF A SPECIFIC PRODUCT
+router.get('/products/:id/reviews',async(req,res,next)=>{
+    try {
+        
     } catch (error) {
         res.status(500).send({message:error.message})
     }
