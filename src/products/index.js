@@ -21,7 +21,7 @@ productsRouter.post("/:id/upload", multer().single('image'), async(req, res, nex
         console.log(req.params)
         const {url, id} = await writeFileToPublicDirectory(req.file)
         //res.send({url, id})
-       const updateimage = { "imageUrl" : `${url}` }
+       //const updateimage = { "imageUrl" : `${url}` }
         const products = await getproducts()
         const TobeEditedproductIndex = products.findIndex(product => product._id === req.params.id)
         products[TobeEditedproductIndex] = {...products[TobeEditedproductIndex], ...updateimage}
