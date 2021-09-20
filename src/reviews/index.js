@@ -3,7 +3,7 @@ import {fileURLToPath} from 'url'
 import path,{dirname} from 'path'
 import fs from 'fs'
 import uniqid from 'uniqid'
-//import { send } from 'process'
+import {checkReviewSchema,checkValidationResult} from './validation.js'
 
 const _FILENAME=fileURLToPath(import.meta.url)
 const _DIRNAME=dirname(_FILENAME)
@@ -26,15 +26,16 @@ router.get('/',async(req,res,next)=>{
     }
 })
 // POST A REVIEW by product ID
-router.post('/:id',async(req,res,next)=>{
+router.post('/:id',checkReviewSchema,checkValidationResult,async(req,res,next)=>{
     try {        
         const buffer=fs.readFileSync(reviewsJSONFILEPath)
         const string=buffer.toString()
         const array=JSON.parse(string)
-        const{comment,rate}=req.body
+        //const{comment,rate}=req.body BECAUSE I'M USING VALIDATION SCHEMA
         const review={
             _id:uniqid(),
-            comment,rate,
+            //comment,rate, BECAUSE I'M USING VALIDATION SCHEMA
+            ...req.body,
             productId:req.params.id,
             createdAt:new Date()
         }
