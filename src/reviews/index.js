@@ -65,10 +65,10 @@ router.delete('/:id',async(req,res,next)=>{
         const buffer=fs.readFileSync(reviewsJSONFILEPath)
         const string=buffer.toString()
         const array=JSON.parse(string)
-        console.log(array)
+        const reviewToDelete=array.find(r=>r._id===req.params.id)
+        if(!reviewToDelete){message:`A REVIEW WITH ID ${req.params.id} DOES NOT EXIST`}
         const newArray=array.filter(r=>r._id!==req.params.id)
         fs.writeFileSync(reviewsJSONFILEPath,JSON.stringify(newArray))
-        console.log(newArray)
         res.send(newArray)
     } catch (error) {
         res.status(500).send({message:error.message})
