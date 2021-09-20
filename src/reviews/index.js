@@ -48,13 +48,28 @@ router.put('/:id',async(req,res,next)=>{
         const buffer=fs.readFileSync(reviewsJSONFILEPath)
         const string=buffer.toString()
         const array=JSON.parse(string)
-        const oldReviewIndex=array.findIndex(r=>r.id===req.params.id)
+        const oldReviewIndex=array.findIndex(r=>r._id===req.params.id)
         if(oldReviewIndex==-1){message:`REVIEW WITH ID ${req.params.id} DOES NOT EXIST`}
         const oldReview=array[oldReviewIndex]
-        const updatedReview={...oldReview,...req.body,upDatedAt:new Date(),id:req.params.id}
+        const updatedReview={...oldReview,...req.body,upDatedAt:new Date(),_id:req.params.id}
         array[oldReviewIndex]=updatedReview
         fs.writeFileSync(reviewsJSONFILEPath,JSON.stringify(array))
         res.send(updatedReview)
+    } catch (error) {
+        res.status(500).send({message:error.message})
+    }
+})
+// DELETE A REVIEW by id
+router.delete('/:id',async(req,res,next)=>{
+    try {
+        const buffer=fs.readFileSync(reviewsJSONFILEPath)
+        const string=buffer.toString()
+        const array=JSON.parse(string)
+        console.log(array)
+        const newArray=array.filter(r=>r._id!==req.params.id)
+        fs.writeFileSync(reviewsJSONFILEPath,JSON.stringify(newArray))
+        console.log(newArray)
+        res.send(newArray)
     } catch (error) {
         res.status(500).send({message:error.message})
     }
