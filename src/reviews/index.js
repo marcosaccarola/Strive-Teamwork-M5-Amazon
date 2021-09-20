@@ -74,5 +74,18 @@ router.delete('/:id',async(req,res,next)=>{
         res.status(500).send({message:error.message})
     }
 })
+// GET A SINGLE REVIEW by ID
+router.get('/:id',async(req,res,next)=>{
+    try {
+        const buffer=fs.readFileSync(reviewsJSONFILEPath)
+        const string=buffer.toString()
+        const array=JSON.parse(string)
+        const reqReview=array.find(r=>r._id===req.params.id)
+        if(!reqReview){message:`A REVIEW WITH ID ${req.params.id} DOES NOT EXIST`}
+        res.send(reqReview)
+    } catch (error) {
+        res.status(500).send({message:error.message})
+    }
+})
 
 export default router
