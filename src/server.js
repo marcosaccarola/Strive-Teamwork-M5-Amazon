@@ -1,7 +1,18 @@
-import express from 'express'
+import express from "express";
+import productsRouter from "./products/index.js";
+import listEndpoints from "express-list-endpoints"
+import cors from "cors"
 
-const server=express()
-const PORT=3001
+const server = express();
+const PORT = 3001;
 
-server.listen(PORT,()=>{console.log(`SERVER OK - PORT: ${PORT}`)})
-server.on('error',(error)=>console.log(`SERVER CRASH - ERROR: ${error}`))
+server.use(cors())
+server.use(express.json())
+server.use("/products", productsRouter)
+
+console.table(listEndpoints(server))
+
+server.listen(PORT, () => {
+  console.log(`SERVER OK - PORT: ${PORT}`);
+});
+server.on("error", (error) => console.log(`SERVER CRASH - ERROR: ${error}`));
