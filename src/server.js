@@ -7,6 +7,7 @@ const server=express()
 server.use(cors())
 server.use(express.json())
 server.use('/reviews',reviewsRouter)
+server.use('/products/:id/reviews',reviewsRouter)
 const PORT=3001
 
 server.listen(PORT,()=>{console.log(`SERVER OK - PORT: ${PORT}`)})
