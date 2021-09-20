@@ -8,7 +8,7 @@ import uniqid from 'uniqid'
 const _FILENAME=fileURLToPath(import.meta.url)
 const _DIRNAME=dirname(_FILENAME)
 const reviewsJSONFILEPath=path.join(_DIRNAME,'reviews.json')
-const productsJSONFILEPath=path.join(_DIRNAME,'../products/products.json')
+//const productsJSONFILEPath=path.join(_DIRNAME,'../products/products.json')
 
 
 
@@ -93,7 +93,12 @@ router.get('/:id',async(req,res,next)=>{
 // EXTRA METHOD TO GET ALL REVIEWS OF A SPECIFIC PRODUCT
 router.get('/products/:id/reviews',async(req,res,next)=>{
     try {
-        
+        const buffer=fs.readFileSync(reviewsJSONFILEPath)
+        const string=buffer.toString()
+        const array=JSON.parse(string)
+        const reviews=array.filter(r=>r.productId===req.params.id)
+        console.log('reviews:',reviews)
+        res.send(reviews)
     } catch (error) {
         res.status(500).send({message:error.message})
     }
