@@ -25,7 +25,8 @@ router.get('/',async(req,res,next)=>{
         const array=JSON.parse(string)
         res.send(array)
     } catch (error) {
-        res.status(500).send({message:error.message})
+        //res.status(500).send({message:error.message})
+        next(createHttpError(400),'ERRRRRRRORRRR')
     }
 })
 // POST A REVIEW by product ID
