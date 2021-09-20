@@ -13,6 +13,9 @@ const router=express.Router()
 router.get('/',async(req,res,next)=>{
     try {
         const buffer=fs.readFileSync(reviewsJSONFILEPath)
+        const string=buffer.toString()
+        const array=JSON.parse(string)
+        res.send(array)
     } catch (error) {
         res.status(500).send({message:error.message})
     }
